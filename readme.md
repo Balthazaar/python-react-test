@@ -12,8 +12,10 @@ Mount and run backend and mongo container with
 ```
 docker-compose ud -d
 ```
+Flask API is going to be accessible on on http://localhost:5000
 
-Open search-fron-end folder and from there we are going to build the docker container for the front end app
+
+Go into search-front-end folder and from there we are going to build the docker container for the front end app
 
 ```
 docker build -t search-front-end/react-app .
