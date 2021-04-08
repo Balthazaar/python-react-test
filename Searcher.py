@@ -7,7 +7,7 @@ import pymongo
 import multiprocessing as mp
 from celery import Celery
 
-mongodb = pymongo.MongoClient("mongodb://localhost:27017/")
+mongodb = pymongo.MongoClient("mongodb://mongo:27017/")
 mdb = mongodb["invertedIndexes"]
 
 class Searcher:
@@ -91,7 +91,7 @@ class Searcher:
 			mathcesDict = self.findKeywordIndexes(query)
 				
 
-		#this iteration is uses for ranking results	by keyword score			
+		#this iteration is uses for ranking results	by keyword score. I am doing on results insted when finding matched in order to save some processing time.			
 		for key, value in mathcesDict.items():
 			matches = {} 
 			for kw in queryToArray:
