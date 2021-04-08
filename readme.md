@@ -10,7 +10,7 @@ docker-compose build
 Mount and run backend and mongo container with
 
 ```
-docker-compose ud -d
+docker-compose up -d
 ```
 Flask API is going to be accessible on on http://localhost:5000
 
