@@ -91,7 +91,7 @@ class Searcher:
 			mathcesDict = self.findKeywordIndexes(query)
 				
 
-		#This iteration is used for ranking results	by keyword score. I am doing on results instead when finding matched in order to save some processing time.	
+		#This iteration is used for ranking results	by keyword score. I am doing it on results instead of doing it  when finding matched in order to save some processing time.	
 		# Code bellow can be modified to calculate word proximity as well		
 		for key, value in mathcesDict.items():
 			matches = {} 
