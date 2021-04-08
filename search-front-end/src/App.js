@@ -21,6 +21,7 @@ class BookSearch extends React.Component {
       noResults:false,
       executionTime:null,
       currentPage:1,
+      totalPages:0,
       pageStart: 0,
       pageEnd:5,
       searchResults:[]
@@ -29,6 +30,7 @@ class BookSearch extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleNextPageChange = this.handleNextPageChange.bind(this);
+    this.handlePreviousPageChange = this.handlePreviousPageChange.bind(this);
   }
 
   handleChange(event) {
@@ -37,9 +39,18 @@ class BookSearch extends React.Component {
 
   handleNextPageChange(event) {
       event.preventDefault();
-      console.log("clicked", this.state.currentPage);
+      this.setState({currentPage: this.state.currentPage+1});
       this.setState({pageStart: this.state.pageStart+5});
       this.setState({pageEnd: this.state.pageEnd+5});
+
+  }
+
+
+  handlePreviousPageChange(event) {
+      event.preventDefault();
+      this.setState({currentPage: this.state.currentPage-1});
+      this.setState({pageStart: this.state.pageStart-5});
+      this.setState({pageEnd: this.state.pageEnd-5});
 
   }
 
@@ -51,6 +62,7 @@ class BookSearch extends React.Component {
     this.setState({searchResults:data.data});
     if ( data.data.length > 0 ) {
       console.log("executionTime", data.execution_time);
+      this.setState({totalPages:Math.ceil(data.data.length/5)});
       this.setState({executionTime:data.execution_time});
       this.setState({loading:false});
       this.setState({noResults:false});
@@ -128,7 +140,7 @@ class BookSearch extends React.Component {
               </div>
            )):null}
 
-          {this.state.searchResults.length > 5 && !this.state.loading? <div> <a href='#' onClick={this.handleNextPageChange}> Next</a> </div>:null}
+
          
           {this.state.noResults?<p> No results for given keywords </p>:null}
 
@@ -137,6 +149,28 @@ class BookSearch extends React.Component {
         </div>
         </Col>
        </Row> 
+       <Row className="justify-content-md-center prev-next"> 
+          <Col md='1'> 
+             
+          <div>
+
+          {this.state.currentPage > 1 && !this.state.loading?  <a href='#' onClick={this.handlePreviousPageChange}> Previous</a> :null}
+
+          {this.state.searchResults.length > 5 && !this.state.loading?  <a href='#' onClick={this.handleNextPageChange}> Next</a> :null}
+
+          
+
+          </div>
+
+          </Col> 
+
+          <Col md='2'> 
+
+            {this.state.searchResults.length > 0? <span> Page {this.state.currentPage} / {this.state.totalPages} </span> :null}
+
+          </Col>
+      </Row>
+       <Row> <Col> <div className='footer'> Footer content goes here </div> </Col> </Row>
       </Container>
     );
   }

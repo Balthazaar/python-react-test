@@ -12,8 +12,8 @@ mdb = mongodb["invertedIndexes"]
 
 class Searcher:
 
-	fileName = "imdb_data.tsv"
-    #prepare words for matching
+	fileName = "data.tsv"
+	#prepare words for matching
 	def processWords(self,w):
 
 		return  [w for w in w.split(" ") 
@@ -31,9 +31,9 @@ class Searcher:
 				and w !='...']
 
 
-    # this method interetes through the data source and finds indexes of maching keywords
+	# this method interetes through the data source and finds indexes of maching keywords
 	def findKeywordIndexes(self,query):
-		foundIndexes = []
+		mathcesDict = {}
 		with open(self.fileName,"rb") as f:
 				map_file = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
 				i=0
@@ -44,13 +44,15 @@ class Searcher:
 					res = [kw for kw in queryToArray if(kw.lower() in line.decode("utf-8").split("\t")[2].lower())]
 				
 					if len(res)>0:
-					 	foundIndexes.append(i)
+						mathcesDict[i] = []
+						mathcesDict[i].append(line.decode("utf-8").split("\t")[2].lower())
+						mathcesDict[i].append(line.decode("utf-8").split("\t")[2])
 						
 				
 					i += 1
 				map_file.close()
-
-		return foundIndexes
+	
+		return mathcesDict
 
 	def insertInvertedIndexes(self,query,data):
 		coll = mdb["invertedIndexes"]
@@ -74,25 +76,23 @@ class Searcher:
 	def search(self,query):
 		queryToArray =  self.processWords(query)
 		getDbData = self.getIndexesFromDb(query)
-		booksDict = {}
+		mathcesDict = {}
 		results = []
-		with open(self.fileName,encoding="utf8") as f:
-			lines=f.readlines()
-			if getDbData.count() > 0:
+		
+		if getDbData.count() > 0:
+			with open(self.fileName,encoding="utf8") as f:
+				lines=f.readlines()
 				for line in getDbData:
 					for index in line['docs']:
-						booksDict[index[0]] = []
-						booksDict[index[0]].append((lines[int(index[0])].split("\t")[2].lower()))
-						booksDict[index[0]].append((lines[int(index[0])].split("\t")[2]))
-			else:
-				foundIndexes = self.findKeywordIndexes(query)
-				for index in foundIndexes:
-					booksDict[index] = []
-					booksDict[index].append((lines[int(index)].split("\t")[2].lower()))
-					booksDict[index].append((lines[int(index)].split("\t")[2]))
+						mathcesDict[index[0]] = []
+						mathcesDict[index[0]].append((lines[int(index[0])].split("\t")[2].lower()))
+						mathcesDict[index[0]].append((lines[int(index[0])].split("\t")[2]))
+		else:
+			mathcesDict = self.findKeywordIndexes(query)
+				
 
 		#this iteration is uses for ranking results	by keyword score			
-		for key, value in booksDict.items():
+		for key, value in mathcesDict.items():
 			matches = {} 
 			for kw in queryToArray:
 				if kw.lower() in self.processWords(value[0]):

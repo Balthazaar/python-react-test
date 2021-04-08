@@ -45,6 +45,11 @@
   padding-bottom:20px;
 }
 
+.searchResults {
+
+  min-height: 1000px;
+}
+
 .txt-inpt {
 
   width: 60% !important;
@@ -53,6 +58,16 @@
 .not-found {
   text-decoration: line-through;
 
+}
+
+.footer {
+
+  background: black;
+  color: white;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 @keyframes App-logo-spin {
